@@ -1,0 +1,69 @@
+#Install spark
+!pip install pyspark
+!pip install findspark
+
+#Import Libraries
+import findspark
+findspark.init()
+from pyspark import SparkContext, SparkConf
+from pyspark.sql import SparkSession
+
+#Start session
+
+# Creating a spark context class
+sc = SparkContext()
+
+# Creating a spark session
+spark = SparkSession \
+    .builder \
+    .appName("SparkML OPs").getOrCreate()
+
+# Download The search term dataset from the below url
+!wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0321EN-SkillsNetwork/Bigdata%20and%20Spark/searchterms.csv
+
+# Load the csv into a spark dataframe
+spark = SparkSession \
+    .builder \
+    .appName("SparkML OPs").getOrCreate()
+df =spark.read.option("header",True) \
+     .csv("searchterms.csv")
+df.printSchema
+
+# Print the number of rows and columns
+# Take a screenshot of the code and name it as shape.jpg)
+nrows = df.count()
+ncols = len(df.columns)
+nrows,ncols
+
+# Print the top 5 rows
+# Take a screenshot of the code and name it as top5rows.jpg)
+df.show(5)
+
+# Find out the datatype of the column searchterm?
+# Take a screenshot of the code and name it as datatype.jpg)
+type(df['searchterm'])
+
+# How many times was the term `gaming laptop` searched?
+# Take a screenshot of the code and name it as gaminglaptop.jpg)
+df.filter(df['searchterm'] == 'gaming laptop').count()
+
+# Print the top 5 most frequently used search terms?
+# Take a screenshot of the code and name it as top5terms.jpg)
+
+count = df.groupby(['searchterm'])\
+.agg({"searchterm": "count"})\
+.sort("count(searchterm)", ascending=False)\
+.show(5)
+
+# The pretrained sales forecasting model is available at  the below url
+!wget https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0321EN-SkillsNetwork/Bigdata%20and%20Spark/model.tar.gz
+
+# Load the sales forecast model.
+# Take a screenshot of the code and name it as loadmodel.jpg)
+
+from pyspark.ml.regression import LinearRegressionModel
+model = LinearRegressionModel.load(sales_prediction.model')
+
+
+
+
